@@ -1,7 +1,7 @@
 package com.robot.friday.integration;
 
 import com.robot.friday.FridayApplication;
-import com.robot.friday.service.SpeakService;
+import com.robot.friday.service.Mouth;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class Text2SoundTest {
 
     @Autowired
-    private SpeakService speakService;
+    private Mouth mouth;
 
     @Test
     public void saySomething() {
-        speakService.speak("Now that we know the basic volume-related Docker commands, let’s see how we use them with containers and services.\n");
+        mouth.speak("Now that we know the basic volume-related Docker commands, let’s see how we use them with containers and services.\n");
     }
 }

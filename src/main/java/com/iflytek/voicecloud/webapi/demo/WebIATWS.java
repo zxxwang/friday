@@ -2,7 +2,6 @@ package com.iflytek.voicecloud.webapi.demo;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.robot.friday.service.ListenService;
 import okhttp3.*;
 
 import javax.crypto.Mac;

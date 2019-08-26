@@ -1,6 +1,9 @@
 package com.robot.friday.service;
 
 import com.robot.friday.integration.IflytekTtsClient;
+import com.robot.friday.integration.KugouMusicClient;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +13,13 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-public class SpeakService {
+public class Mouth {
+    private KugouMusicClient kugouMusicClient;
     private IflytekTtsClient iflytekTtsClient;
 
     @Autowired
-    public SpeakService(IflytekTtsClient iflytekTtsClient) {
+    public Mouth(KugouMusicClient kugouMusicClient, IflytekTtsClient iflytekTtsClient) {
+        this.kugouMusicClient = kugouMusicClient;
         this.iflytekTtsClient = iflytekTtsClient;
     }
 
@@ -48,5 +53,13 @@ public class SpeakService {
             sourceDataLine.close();
         }
 
+    }
+
+    public void sing(String music) {
+        try {
+            new Player(kugouMusicClient.play(music)).play();
+        } catch (JavaLayerException e) {
+            log.error("音乐播放失败, {}", e);
+        }
     }
 }

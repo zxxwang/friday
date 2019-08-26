@@ -8,7 +8,7 @@ import javax.sound.sampled.*;
 
 @Slf4j
 @Service
-public class ListenService {
+public class Ear {
 
     static volatile boolean stop=false;
     public static void main(String[] args) {
@@ -39,7 +39,7 @@ public class ListenService {
                     (Math.log(value)/Math.log(10.0)*20.0);
             fc.setValue(dB);
             int nByte = 0;
-            final int bufSize=40960 ;
+            final int bufSize=128000 ;
             byte[] buffer = new byte[bufSize];
             int i = 0;
             while (nByte != -1) {
