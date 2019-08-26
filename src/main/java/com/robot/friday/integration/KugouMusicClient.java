@@ -3,24 +3,24 @@ package com.robot.friday.integration;
 import com.google.common.collect.ImmutableMap;
 import com.robot.friday.StringUtils;
 import com.robot.friday.integration.response.KugouSearchResponse;
+import com.robot.friday.integration.response.KugouSongResponse;
 import feign.Feign;
-import feign.Response;
 import feign.Target;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -39,9 +39,9 @@ public class KugouMusicClient {
 
     public InputStream play(String music) {
         try {
-            String musicAddress = this.kugouSongSearch(music);
-            if (musicAddress != null) {
-                return kugouClient.play(new URI(musicAddress)).body().asInputStream();
+            String playUrl = this.kugouSongSearch(music);
+            if (Strings.isNotBlank(playUrl)) {
+                return kugouClient.play(new URI(playUrl)).body().asInputStream();
             }
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
@@ -57,24 +57,19 @@ public class KugouMusicClient {
                     .put("pagesize", Integer.toString(5))
                     .build();
             URI uri = new URI(StringUtils.urlBuilder("https://songsearch.kugou.com/song_search_v2", param));
-            KugouSearchResponse response = kugouClient.searchSong(uri);
-            return kugouPlayUrl(response.getData()
-                    .getLists()
-                    .get(0)
-                    .getFileHash());
+            return selectValidPlayUrl(kugouClient.searchSong(uri));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private String kugouPlayUrl(String hash) {
+    private String kugouRetrievePlayUrl(String hash) {
         try {
             ImmutableMap<String, String> param = new ImmutableMap.Builder<String, String>()
                     .put("r", "play/getdata")
                     .put("hash", hash)
-                    // TODO: 2019/8/26 如何更新mid 
-                    .put("mid", "f8dd31fd7c026bb43477478e0075c912")
+                    .put("mid", UUID.randomUUID().toString()) // 加一个uuid就可以，为什么
                     .build();
             URI uri = new URI(StringUtils.urlBuilder("https://wwwapi.kugou.com/yy/index.php", param));
             return kugouClient.getPlayUrl(uri)
@@ -86,4 +81,13 @@ public class KugouMusicClient {
         return null;
     }
 
+    private String selectValidPlayUrl(KugouSearchResponse response) {
+        for (KugouSearchResponse.SongDetail songDetail : response.getData().getLists()) {
+            String playUrl = this.kugouRetrievePlayUrl(songDetail.getFileHash());
+            if (Strings.isNotBlank(playUrl)) {
+                return playUrl;
+            }
+        }
+        return null;
+    }
 }

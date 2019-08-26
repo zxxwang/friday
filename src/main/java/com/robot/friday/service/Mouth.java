@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sound.sampled.*;
+import java.io.InputStream;
 import java.util.Objects;
 
 @Slf4j
@@ -57,7 +58,12 @@ public class Mouth {
 
     public void sing(String music) {
         try {
-            new Player(kugouMusicClient.play(music)).play();
+            InputStream song = kugouMusicClient.play(music);
+            if (Objects.nonNull(song)) {
+                new Player(song).play();
+            } else {
+                speak("由于版权原因，该歌曲无法播放");
+            }
         } catch (JavaLayerException e) {
             log.error("音乐播放失败, {}", e);
         }
