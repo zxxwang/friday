@@ -54,7 +54,7 @@ public class KugouMusicClient {
             ImmutableMap<String, String> param = new ImmutableMap.Builder<String, String>()
                     .put("keyword", songName)
                     .put("page", Integer.toString(1))
-                    .put("pagesize", Integer.toString(5))
+                    .put("pagesize", Integer.toString(2))
                     .build();
             URI uri = new URI(StringUtils.urlBuilder("https://songsearch.kugou.com/song_search_v2", param));
             return selectValidPlayUrl(kugouClient.searchSong(uri));

@@ -10,16 +10,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FridayApplication.class)
-public class PlayerTest {
+public class MouthTest {
 
-    @Autowired
-    private KugouMusicClient kugouMusicClient;
     @Autowired
     private Mouth mouth;
 
+    @Test
+    public void saySomething() {
+        mouth.speak("Now that we know the basic volume-related Docker commands, let’s see how we use them with containers and services.");
+    }
 
     @Test
     public void kugouTest() {
-        mouth.sing("模特");
+        mouth.sing("晴天");
     }
+
 }
