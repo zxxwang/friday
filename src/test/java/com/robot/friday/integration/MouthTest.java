@@ -23,7 +23,7 @@ public class MouthTest {
 
     @Test
     public void kugouTest() {
-        mouth.sing("模特");
+        mouth.sing("天空中最亮的星", "逃跑计划");
     }
 
 }

@@ -1,4 +1,4 @@
-package com.robot.friday;
+package com.robot.friday.util;
 
 import java.util.Map;
 import java.util.stream.Collectors;

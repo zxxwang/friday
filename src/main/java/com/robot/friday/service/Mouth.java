@@ -56,9 +56,9 @@ public class Mouth {
         }
     }
 
-    public void sing(String music) {
+    public void sing(String music, String singer) {
         try {
-            InputStream song = kugouMusicClient.play(music);
+            InputStream song = kugouMusicClient.play(music, singer);
             if (Objects.nonNull(song)) {
                 new Player(song).play();
             } else {
